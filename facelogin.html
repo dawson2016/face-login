@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+	<head>
+	<title>GET VIDEO</title>
+	<meta charset="utf-8">
+	</head>
+	<body>
+	<input type="button" title="开启摄像头" value="开启摄像头" onclick="getMedia()" />
+	<video id="video" width="100px" height="100px" autoplay="autoplay"></video>
+	<canvas id="canvas" width="100px" height="100px"></canvas>
+	<button id="snap" onclick="takePhoto()">拍照</button>
+	<script>
+        function getMedia() {
+            let constraints = {
+                video: {width: 100, height: 100},
+                audio: true
+            };
+            let video = document.getElementById("video");
+            let promise = navigator.mediaDevices.getUserMedia(constraints);
+            promise.then(function (MediaStream) {
+                video.srcObject = MediaStream;
+                video.play();
+            });
+        }
+ 
+      function takePhoto() {
+      let video = document.getElementById("video");
+      let canvas = document.getElementById("canvas");
+      let ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, 100, 100);
+var saveImage = canvas.toDataURL('image/png',0.5);
+var b64 = saveImage.substring(22);
+console.log(b64)
+$.ajax({
+url: "https://face.hseduyun.net/saveImg",
+type:'post',
+data: {myimg: b64},
+success:function (data)  
+        {  
+      if (data=="face"){ data="未检测到人脸！"}
+alert(data)
+}
+});  
+      }
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+</body>
+</html>
